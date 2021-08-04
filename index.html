@@ -41,18 +41,38 @@
     <script src="https://js.pusher.com/beams/1.0/push-notifications-cdn.js"></script>
 
     <script>
-      const beamsClient = new PusherPushNotifications.Client({
-        instanceId: "5facc5cf-b01a-4cb3-86d2-04b7454acf17",
-      });
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+          .register("./beams/service-worker.js", { scope: "./beams/" })
+          .then((reg) => {
+            // registration worked
+            console.log("Registration succeeded. Scope is " + reg.scope);
 
-      const beamsTokenProvider = new PusherPushNotifications.TokenProvider({
-        url: "https://api-test15.seeking.com/v3/pusher/beams-auth",
-      });
+            const beamsClient = new PusherPushNotifications.Client({
+              instanceId: "5facc5cf-b01a-4cb3-86d2-04b7454acf17",
+              serviceWorkerRegistration: reg,
+            });
 
-      beamsClient
-        .start()
-        .then(() => beamsClient.setUserId("85371a11-e85e-443e-b100-1b54861d3801", beamsTokenProvider))
-        .catch(console.error);
+            const beamsTokenProvider =
+              new PusherPushNotifications.TokenProvider({
+                url: "https://api-test15.seeking.com/v3/pusher/beams-auth",
+              });
+
+            beamsClient
+              .start()
+              .then(() =>
+                beamsClient.setUserId(
+                  "85371a11-e85e-443e-b100-1b54861d3801",
+                  beamsTokenProvider
+                )
+              )
+              .catch(console.error);
+          })
+          .catch((error) => {
+            // registration failed
+            console.log("Registration failed with " + error);
+          });
+      }
     </script>
   </body>
 </html>
