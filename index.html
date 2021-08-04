@@ -23,6 +23,7 @@
     />
 
     <title>Test Pusher Beams</title>
+    <button onclick="allowNotification">Notification</button>
   </head>
 
   <body>
@@ -48,10 +49,6 @@
             // registration worked
             console.log("Registration succeeded. Scope is " + reg.scope);
 
-            Notification.requestPermission(function (status) {
-              console.log("Notification permission status:", status);
-            });
-
             const beamsClient = new PusherPushNotifications.Client({
               instanceId: "5facc5cf-b01a-4cb3-86d2-04b7454acf17",
               serviceWorkerRegistration: reg,
@@ -76,6 +73,12 @@
             // registration failed
             console.log("Registration failed with " + error);
           });
+      }
+
+      function allowNotification() {
+        Notification.requestPermission(function (status) {
+          console.log("Notification permission status:", status);
+        });
       }
     </script>
   </body>
